@@ -1,6 +1,8 @@
 
 # Movie MVC
 
+The objective of this learning is to move an existing ASP.NET MVC applicaiton to ASP.NET Core MVC.
+
 Learning ASP.NET Core MVC by building a simple CRUD Movie listing app.
 Source: https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-mvc-app/start-mvc
 
@@ -10,7 +12,7 @@ CLI Tools: https://learn.microsoft.com/en-us/dotnet/core/tools
 
 
 SQLite is used as a data store.
-
+The development and production environment is Ubuntu.
 
 ## Initiate Project
 `dotnet new mvc -o MvcMovie` : Creates a new ASP.NET Core MVC project in the MvcMovie folder.
@@ -36,15 +38,18 @@ The model classes created are known as POCO classes, from Plain Old CLR Objects.
 
 Model classes are created first and EF Core creates the database.
 
+Add tools and dependent packages. 
+
 ```
 dotnet tool uninstall --global dotnet-aspnet-codegenerator
 dotnet tool install --global dotnet-aspnet-codegenerator
+
 dotnet tool uninstall --global dotnet-ef
 dotnet tool install --global dotnet-ef
+
 dotnet add package Microsoft.EntityFrameworkCore.Design
 dotnet add package Microsoft.EntityFrameworkCore.SQLite
 dotnet add package Microsoft.VisualStudio.Web.CodeGeneration.Design
-dotnet add package Microsoft.EntityFrameworkCore.SqlServer
 ```
 
 ## Scaffold Views And Controller 
@@ -130,3 +135,51 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 ```
+
+
+# Use MySQL Database
+
+As the application that needs migration uses MySQL, we want to implement MySQL.
+
+`dotnet tool update --global dotnet-ef` : upgrade Entity Framework Core.
+
+`dotnet add package Pomelo.EntityFrameworkCore.MySql --version=7.0.0-alpha.1`: As our .NET Core version is 7.0.0, the latest release was used although that is in alpha.
+
+`dotnet ef migrations add UseMySQL` : Generate migrations to use with MySQL and it's database context.
+
+`dotnet ef database update`: Update database changes with the newly generated migrations.
+
+When ever any change is made, new migration needs to be generated and applied to database.
+
+Here we are using Pomelo as the Entity Framework Core provider for MySQL. 
+It is choosen primarily because:
+- It is opensource.
+- It is built on top of MySqlConnector, an opensource high performance MySQL library for .NET.
+
+https://github.com/PomeloFoundation/Pomelo.EntityFrameworkCore.MySql
+https://www.nuget.org/packages/Pomelo.EntityFrameworkCore.MySql
+
+More direct approach to scaffold would be:
+`dotnet ef dbcontext scaffold "Server=localhost;User=root;Password=1234;Database=ef" "Pomelo.EntityFrameworkCore.MySql --version=7.0.0-alpha.1"`
+
+
+Other official option : https://www.nuget.org/packages/MySql.EntityFrameworkCore
+
+## Security
+Prior, the database connection string was set on appsettings.json file and or was hardcoded on Program.cs.
+
+The connection string is fetched via environment variable.
+
+`export CONNECTION_STRING='Server=localhost;User=root;Password=1234;Database=ef;Port=3306`
+
+Port is optional if the MySQL Sever is publicy accessile at port 3306. 
+
+
+## Running Application
+By default, application runs in Development environmet.
+
+`dotnet run --environment Production --urls http://localhost:8080`: Set environment and port.
+
+Deployment needs to be researched further.
+https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/linux-nginx
+

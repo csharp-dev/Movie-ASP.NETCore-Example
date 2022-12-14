@@ -19,6 +19,7 @@ public static class SeedData
             {
                 return;   // DB has been seeded
             }
+            
             context.Movie.AddRange(
                 new Movie
                 {
