@@ -159,8 +159,11 @@ It is choosen primarily because:
 https://github.com/PomeloFoundation/Pomelo.EntityFrameworkCore.MySql
 https://www.nuget.org/packages/Pomelo.EntityFrameworkCore.MySql
 
-More direct approach to scaffold would be:
-`dotnet ef dbcontext scaffold "Server=localhost;User=root;Password=1234;Database=ef" "Pomelo.EntityFrameworkCore.MySql --version=7.0.0-alpha.1"`
+
+Create Model scaffold from database:
+`dotnet ef dbcontext scaffold "Server=localhost;User=root;Password=1234;Database=ef" "Pomelo.EntityFrameworkCore.MySql"`
+
+Or, generate models from database tables.
 
 
 Other official option : https://www.nuget.org/packages/MySql.EntityFrameworkCore
