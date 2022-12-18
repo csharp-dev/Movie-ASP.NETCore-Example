@@ -180,3 +180,59 @@ https://learn.microsoft.com/en-us/ef/core/cli/dotnet#dotnet-ef-dbcontext-scaffol
 `dotnet ef dbcontext scaffold "Server=XXX;Database=XXX;User=XXX;Password=XXX;Port=XXX" "Pomelo.EntityFrameworkCore.MySql" -o Models -t User` : Generate User model
 
 ` dotnet aspnet-codegenerator controller -name UsersController -m User -dc MvcMovie.Data.MvcMovieContext --relativeFolderPath Controllers --useDefaultLayout`: Generate Users Controller and View
+
+
+## Add To The Project Solution
+When to use a solution file to manage several projects as a single unit.
+
+We want to create separate projects based on their concerns and create modular units as projects.
+
+```
+dotnet new sln --name aspdonetcore-example
+dotnet new classlib -o BusinessLogic/BusinessLogic -n BusinessLogic
+dotnet new nunit --output Test/Unit --name Unit
+dotnet new nunit --output Test/Integration --name Integration
+dotnet sln add BusinessLogic/BusinessLogic
+dotnet sln add Test/Unit 
+dotnet sln add Test/Integration
+dotnet restore
+dotnet build aspdonetcore-example.sln
+dotnet run -p MvcMovie 
+```
+- https://softchris.github.io/pages/dotnet-core.html 
+- https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-sln
+- https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-new-sdk-templates
+
+
+## Add Unit Test
+`dotnet new nunit --output Test/Unit --name Unit` : Adds Nunit testing framework.
+`dotnet add Test/Unit reference BusinessLogic/BusinessLogic.csproj` : Add BusinessLogic project reference to be unit tested.
+`dotnet test Test/Unit` : Run Unit test.
+`dotnet test Test/Unit --no-build` : Run tests on a previous build.
+
+
+- https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-best-practices
+- https://github.com/dotnet/test-templates
+- https://learn.microsoft.com/en-us/dotnet/core/tutorials/testing-library-with-visual-studio-code
+- https://www.pluralsight.com/guides/testing-.net-core-apps-with-visual-studio-code 
+- https://nunit.org
+
+
+## VSCode Soluton Exploer Extension 
+`vscode-solution-explorer`
+https://github.com/fernandoescolar/vscode-solution-explorer
+
+`code --list-extensions`
+code --install-extension ms-vscode.cpptools
+code --uninstall-extension ms-vscode.csharp
+
+
+## dotnet restore - Restores the dependencies and tools of a project.
+We don't have to run dotnet restore because it's run implicitly by all commands that require a restore to occur, such as `dotnet new`, `dotnet build`, `dotnet run`, `dotnet test`, `dotnet publish`, and `dotnet pack`. 
+
+To disable implicit restore, use the `--no-restore` option.
+
+The dotnet restore command is still useful in certain scenarios where explicitly restoring makes sense, such as continuous integration builds or in build systems that need to explicitly control when the restore occurs.
+
+The dotnet restore command uses NuGet to restore dependencies as well as project-specific tools that are specified in the project file. In most cases, you don't need to explicitly use the dotnet restore command, since a NuGet restore is run implicitly if necessary.
+ 
