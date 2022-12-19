@@ -5,11 +5,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using MvcMovie.Data;
 using MvcMovie.Models;
 
 namespace MvcMovie.Controllers
-{
+{   
+    [Authorize]
     public class UsersController : Controller
     {
         private readonly MvcMovieContext _context;
